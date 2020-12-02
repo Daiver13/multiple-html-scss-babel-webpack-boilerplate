@@ -10,16 +10,16 @@ const isProd = !isDev
 
 const optimization = () => {
   const config = {
-    splitChunks: {
-      chunks: 'all'
-    }
+    // splitChunks: {
+    //   chunks: 'all'
+    // }
   }
 
   if (isProd) {
-    config.minimizer = [
-      new OptimizeCssAssetsWebpackPlugin(),
-      new TerserWebpackPlugin()
-    ]
+    // config.minimizer = [
+    //   new OptimizeCssAssetsWebpackPlugin(),
+    //   new TerserWebpackPlugin()
+    // ]
   }
 
   return config
@@ -40,7 +40,7 @@ module.exports = {
   },
   output: {
     publicPath: '',
-    filename: '[name]/[hash:20].js',
+    filename: '[fullhash].js',
     path: path.resolve(__dirname, 'build'),
   },
   module: {
@@ -56,14 +56,42 @@ module.exports = {
       },
       {
         test: /\.s[ac]ss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'resolve-url-loader', 'sass-loader']
       },
       {
-        test: /\.(jpe?g|png|gif|svg)$/i,
+        test: /\.(jpe?g|png|gif|svg|woff2?|ttf|otf|eot)$/i,
         use: {
           loader: 'file-loader',
           options: {
-            name: '[path][name].[ext]',
+            name: '[name].[ext]',
+            // context: '',
+
+            // context: 'project',
+            // publicPath: './',
+            // outputPath: (url, resourcePath, context) => {
+            //   console.log('outputPath - url', url)
+            //   // console.log('outputPath - url replace', url.replace('exp1/', ''))
+            //   console.log('outputPath - resourcePath', resourcePath)
+            //   console.log('outputPath - context', context)
+            //   // debugger
+            //   // `resourcePath` is original absolute path to asset
+            //   // `context` is directory where stored asset (`rootContext`) or `context` option
+
+            //   // To get relative path you can use
+            //   // const relativePath = path.relative(context, resourcePath);
+
+            //   return 'exp1/' +
+
+            //   if (/my-custom-image\.png/.test(resourcePath)) {
+            //     return `other_output_path/${url}`;
+            //   }
+
+            //   if (/images/.test(context)) {
+            //     return `image_output_path/${url}`;
+            //   }
+
+            //   return `output_path/${url}`;
+            // },
           }
         }
       },
@@ -76,12 +104,12 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: '[name]/[name].css',
+      filename: '[name].css',
       ignoreOrder: false,
     }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, '/exp1/index.html'),
-      filename: 'exp1/index.html',
+      filename: 'index.html',
       inject: true,
     }),
   ]
